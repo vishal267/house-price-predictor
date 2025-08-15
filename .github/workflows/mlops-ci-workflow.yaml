@@ -28,36 +28,36 @@ jobs:
       - name: Run Data Processing Task  
         run: | 
           python src/data/run_processing.py \
-          --input data/raw/house_data.csv  \
-          --output data/processed/cleaned_house_data.csv
+            --input data/raw/house_data.csv  \
+            --output data/processed/cleaned_house_data.csv
       
       - name: Run Feature Engineering task 
         run: | 
           python src/features/engineer.py \
-          --input data/processed/cleaned_house_data.csv \
-          --output  data/processed/featured_house_data.csv \
-          --preprocessor models/trained/preprocessor.pkl
+            --input data/processed/cleaned_house_data.csv \
+            --output  data/processed/featured_house_data.csv \
+            --preprocessor models/trained/preprocessor.pkl
 
       - name: Set up MLflow
         run: |
-          docker pull ghcr.io/mlflow/mlflow:latest \
+          docker pull ghcr.io/mlflow/mlflow:latest
           docker run -d -p 5000:5000 --name mlflow-server ghcr.io/mlflow/mlflow:latest \
-          mlflow server --host 0.0.0.0 \
-          --backend-store-uri sqlite:///mlflow.db
+            mlflow server --host 0.0.0.0 \
+            --backend-store-uri sqlite:///mlflow.db
         
       - name: Wait for MLflow to start
         run: |
           for i in {1..10}; do
-            curl -f http://localhost:5000/health || sleep 5;
+            curl -f http://localhost:5000/ || sleep 5;
           done
 
       - name: Train the model
         run: | 
           python src/models/train_model.py \
-          --config configs/model_config.yaml  \
-          --data data/processed/featured_house_data.csv \
-          --models-dir models \
-          --mlflow-tracking-uri http://localhost:5555
+            --config configs/model_config.yaml  \
+            --data data/processed/featured_house_data.csv \
+            --models-dir models \
+            --mlflow-tracking-uri http://localhost:5000
       
       - name: Clean up MLflow
         run: |

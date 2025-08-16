@@ -7,7 +7,7 @@ spec:
   scaleTargetRef:
     name: model # update to your actual deployment name
   minReplicaCount: 1
-  maxReplicaCount: 5
+  maxReplicaCount: 3
   pollingInterval: 30 # seconds
   cooldownPeriod: 300 # seconds before scaling down
   triggers:

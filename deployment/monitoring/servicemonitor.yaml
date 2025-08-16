@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: house-price-api-monitor
+  labels:
+    release: prom # Match the label of your Prometheus instance as per Helm release
+spec:
+  selector:
+    matchLabels:
+      app: model
+  namespaceSelector:
+    matchNames:
+      - default # or your namespace
+  endpoints:
+    - port: metrics # Must match the name of the Service's port, not just the number
+      path: /
+      interval: 15s
